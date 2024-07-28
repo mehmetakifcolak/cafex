@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"  # PostgreSQL'in 5432 portunu expose et
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: Passw0rd
+
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
